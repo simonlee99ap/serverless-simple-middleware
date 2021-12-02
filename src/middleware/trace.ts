@@ -68,6 +68,7 @@ export class Tracer {
     this.queueName = queueName;
     this.sqs = sqs;
     this.buffer = [];
+    logger.info(`Tracer initialized`);
   }
 
   public push = (log: TracerLog) => this.buffer.push(log);
@@ -89,6 +90,12 @@ export class Tracer {
       const eventQueueUrl = urlResult.QueueUrl;
 
       const chunkSize = 10;
+      logger.info(`Tracer log flush - length: ${this.buffer.length}`);
+      logger.info(
+        `Tracer log flush - Ids: \n${this.buffer
+          .map(each => `${each.key}_${each.uuid}`)
+          .join('\r\n')}`,
+      );
       for (let begin = 0; begin < this.buffer.length; begin += chunkSize) {
         const end = Math.min(this.buffer.length, begin + chunkSize);
         const subset = this.buffer.slice(begin, end);
@@ -118,7 +125,9 @@ export class TracerWrapper {
     private action: string,
     private client: string,
     private version: string,
-  ) {}
+  ) {
+    logger.info(`Tracer Wrapper initialized - key: ${key}, action: ${action}`);
+  }
 
   public push = (attribute: string, body: string, error: boolean = false) => {
     this.tracer.push(
