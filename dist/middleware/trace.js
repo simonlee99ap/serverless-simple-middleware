@@ -126,7 +126,9 @@ var Tracer = /** @class */ (function () {
                     case 5:
                         begin += chunkSize;
                         return [3 /*break*/, 3];
-                    case 6: return [3 /*break*/, 8];
+                    case 6:
+                        this.buffer = [];
+                        return [3 /*break*/, 8];
                     case 7:
                         error_1 = _a.sent();
                         logger.warn("Error in eventSource: " + error_1);
@@ -138,7 +140,6 @@ var Tracer = /** @class */ (function () {
         this.queueName = queueName;
         this.sqs = sqs;
         this.buffer = [];
-        logger.info("Tracer initialized");
     }
     return Tracer;
 }());
@@ -160,7 +161,6 @@ var TracerWrapper = /** @class */ (function () {
         this.send = function (log) {
             _this.tracer.push(new TracerLog(log.route || _this.route, log.key || _this.key, log.system || _this.system, log.action || _this.action, log.attribute, log.body, log.error || false, log.client || _this.client, log.version || _this.version));
         };
-        logger.info("Tracer Wrapper initialized - key: " + key + ", action: " + action);
     }
     return TracerWrapper;
 }());
