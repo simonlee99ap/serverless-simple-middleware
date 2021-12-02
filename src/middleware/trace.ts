@@ -68,7 +68,6 @@ export class Tracer {
     this.queueName = queueName;
     this.sqs = sqs;
     this.buffer = [];
-    logger.info(`Tracer initialized`);
   }
 
   public push = (log: TracerLog) => this.buffer.push(log);
@@ -110,6 +109,8 @@ export class Tracer {
           .promise();
         logger.stupid(`sendBatchResult`, sendBatchResult);
       }
+
+      this.buffer = [];
     } catch (error) {
       logger.warn(`Error in eventSource: ${error}`);
     }
@@ -125,9 +126,7 @@ export class TracerWrapper {
     private action: string,
     private client: string,
     private version: string,
-  ) {
-    logger.info(`Tracer Wrapper initialized - key: ${key}, action: ${action}`);
-  }
+  ) {}
 
   public push = (attribute: string, body: string, error: boolean = false) => {
     this.tracer.push(
